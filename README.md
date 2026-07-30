@@ -2,8 +2,9 @@
 
 認証ライブラリ選定用リポジトリです。
 
-このプロジェクトは、自作認証を実装した `nextjs-sandbox` をベースに派生し、
-Better Auth および Auth.js の検証を行います。
+このプロジェクトは、自作認証を実装した
+[`nextjs-sandbox`](https://github.com/hamltail/nextjs-sandbox)
+をベースに派生し、Better Auth および Auth.js の検証を行います。
 
 ## Comparison Targets
 
