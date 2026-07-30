@@ -1,6 +1,7 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 
-import { currentUser } from "@/app/lib/auth";
+import { auth } from "@/app/lib/auth";
 
 import Container from "./Container";
 import LogoutButton from "./LogoutButton";
@@ -11,7 +12,9 @@ const navigationItems = [
 ];
 
 export default async function Header() {
-  const user = await currentUser();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   return (
     <header className="border-b border-gray-200 px-7 md:px-11 xl:px-0">
@@ -37,14 +40,14 @@ export default async function Header() {
                 </li>
               ))}
 
-              {user ? (
+              {session ? (
                 <>
                   <li>
                     <Link
-                      href={`/users/${user.id}`}
+                      href={`/users/${session.user.id}`}
                       className="transition-opacity hover:opacity-60"
                     >
-                      {user.name}
+                      {session.user.name}
                     </Link>
                   </li>
 

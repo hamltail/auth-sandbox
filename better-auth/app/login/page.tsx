@@ -3,6 +3,7 @@
 import { SubmitEvent, useState } from "react";
 import Link from "next/link";
 
+import { authClient } from "@/app/lib/auth-client";
 import Container from "@/components/Container";
 
 export default function LoginPage() {
@@ -17,21 +18,16 @@ export default function LoginPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch("/api/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      setErrorMessage(data.message ?? "ログインに失敗しました。");
+    if (error) {
+      setErrorMessage(error.message ?? "ログインに失敗しました。");
       setIsSubmitting(false);
       return;
     }
@@ -45,9 +41,7 @@ export default function LoginPage() {
         <div className="mx-auto max-w-md">
           <h1 className="font-en text-4xl font-bold">Log in</h1>
 
-          <p className="mt-3 text-gray-600">
-            Log in to your account.
-          </p>
+          <p className="mt-3 text-gray-600">Log in to your account.</p>
 
           {errorMessage && (
             <div
@@ -69,7 +63,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
@@ -83,14 +77,14 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-teal-500 px-6 text-lg font-semibold text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-cyan-500 px-6 text-lg font-semibold text-white transition hover:bg-cyan-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Logging in..." : "Log in"}
             </button>
@@ -100,7 +94,7 @@ export default function LoginPage() {
             New user?{" "}
             <Link
               href="/signup"
-              className="font-medium text-teal-600 transition hover:text-teal-700"
+              className="font-medium text-cyan-600 transition hover:text-cyan-700"
             >
               Sign up now!
             </Link>
