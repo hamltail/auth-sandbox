@@ -48,6 +48,23 @@ export default function SignupPage() {
     router.push(`/users/${data.user.id}`);
   }
 
+  async function handleGoogleLogin() {
+    setErrorMessage("");
+    setIsSubmitting(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+
+    if (error) {
+      setErrorMessage(
+        error.message ?? "Googleアカウントでの登録に失敗しました。",
+      );
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section className="px-7 py-12 md:px-11 xl:px-0">
       <Container>
@@ -65,7 +82,26 @@ export default function SignupPage() {
             </div>
           )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="mt-8">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting}
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-6 text-lg font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Redirecting..." : "Sign up with Google"}
+            </button>
+
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-gray-300" />
+
+              <span className="text-sm text-gray-500">OR</span>
+
+              <div className="h-px flex-1 bg-gray-300" />
+            </div>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium">
                 Name
