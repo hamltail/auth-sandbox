@@ -4,6 +4,7 @@ import { SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Container from "@/components/Container";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -19,37 +20,32 @@ export default function SignupPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch("/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        passwordConfirmation: formData.get("passwordConfirmation"),
-      }),
-    });
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+    const passwordConfirmation = String(
+      formData.get("passwordConfirmation") ?? "",
+    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      let message = data.message ?? "ユーザー登録に失敗しました。";
-
-      if (Array.isArray(data.errors) && data.errors.length > 0) {
-        const messages = data.errors.map(
-          (error: { message: string }) => error.message,
-        );
-        message = messages.join("\n");
-      }
-
-      setErrorMessage(message);
+    if (password !== passwordConfirmation) {
+      setErrorMessage("パスワードが一致しません。");
       setIsSubmitting(false);
       return;
     }
 
-    router.push(`/users/${data.id}`);
+    const { data, error } = await authClient.signUp.email({
+      name,
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrorMessage(error.message ?? "ユーザー登録に失敗しました。");
+      setIsSubmitting(false);
+      return;
+    }
+
+    router.push(`/users/${data.user.id}`);
   }
 
   return (
@@ -80,7 +76,8 @@ export default function SignupPage() {
                 name="name"
                 type="text"
                 autoComplete="name"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                // required
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
@@ -94,7 +91,8 @@ export default function SignupPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                // required
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
@@ -108,7 +106,9 @@ export default function SignupPage() {
                 name="password"
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                // minLength={8}
+                // required
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
@@ -125,14 +125,16 @@ export default function SignupPage() {
                 name="passwordConfirmation"
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                // minLength={8}
+                // required
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-teal-500 px-6 text-lg font-semibold text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-cyan-500 px-6 text-lg font-semibold text-white transition hover:bg-cyan-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Creating..." : "Create account"}
             </button>
