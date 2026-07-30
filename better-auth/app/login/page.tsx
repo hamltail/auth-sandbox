@@ -35,6 +35,21 @@ export default function LoginPage() {
     window.location.assign("/");
   }
 
+  async function handleGoogleLogin() {
+    setErrorMessage("");
+    setIsSubmitting(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+
+    if (error) {
+      setErrorMessage(error.message ?? "Googleログインに失敗しました。");
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section className="px-7 py-12 md:px-11 xl:px-0">
       <Container>
@@ -52,7 +67,24 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <div className="mt-8">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting}
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-6 text-lg font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Redirecting..." : "Continue with Google"}
+            </button>
+
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-gray-300" />
+              <span className="text-sm text-gray-500">OR</span>
+              <div className="h-px flex-1 bg-gray-300" />
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium">
                 Email
