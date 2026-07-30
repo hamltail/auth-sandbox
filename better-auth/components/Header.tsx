@@ -21,7 +21,7 @@ export default async function Header() {
             href="/"
             className="font-en text-2xl font-semibold tracking-wide"
           >
-            Sandbox
+            Better Auth Sandbox
           </Link>
 
           <nav aria-label="メインナビゲーション">
@@ -66,7 +66,7 @@ export default async function Header() {
                   <li>
                     <Link
                       href="/signup"
-                      className="inline-flex min-h-10 items-center justify-center rounded-full bg-teal-500 px-5 text-base font-semibold text-white transition hover:bg-teal-600"
+                      className="inline-flex min-h-10 items-center justify-center rounded-full bg-cyan-500 px-5 text-base font-semibold text-white transition hover:bg-cyan-600"
                     >
                       Sign up
                     </Link>

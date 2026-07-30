@@ -1,15 +1,17 @@
-# Next.js Sandbox
+# Better Auth Sandbox
 
-Next.js の学習・技術検証用リポジトリです。
+Next.js 環境で Better Auth の機能や実装方法を検証するためのプロジェクトです。
 
-Next.js や周辺技術を学習・検証し、
-次のプロダクト開発へ活かすことを目的としています。
+## Verification Topics
 
-⚠️ 登録されたテストデータは、毎日 03:00（JST）に自動削除されます。
-
-## Live Demo
-
-🌐 [Webサイトを見る](https://next.hamltail.dev/)
+- メールアドレスとパスワードによる認証
+- ソーシャルログイン
+- セッション管理
+- 認証が必要なページの保護
+- ユーザー情報の取得
+- ログアウト
+- Prismaとの連携
+- エラーハンドリング
 
 ## Tech Stack
 
@@ -17,23 +19,9 @@ Next.js や周辺技術を学習・検証し、
 - React
 - TypeScript
 - Tailwind CSS
+- Better Auth
 - Prisma
 - PostgreSQL
-- Docker
-- Supabase
-- Vercel
-
-## Learning Topics
-
-- App Router
-- Route Handlers
-- Server Actions
-- CRUD
-- Authentication
-- Prisma ORM
-- Supabase
-- Testing (Vitest / Playwright)
-- Vercel Deployment
 
 ## Requirements
 
@@ -77,7 +65,7 @@ docker compose down
 ローカル開発では `.env.local` を使用します。
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/nextjs_sandbox"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/better_auth_sandbox"
 ```
 
 ### Database
