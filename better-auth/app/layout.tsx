@@ -20,8 +20,8 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "Sandbox",
-  description: "Next.js learning sandbox",
+  title: "Better Auth Sandbox",
+  description: "Authentication sandbox for Better Auth.",
 };
 
 export default function RootLayout({

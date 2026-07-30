@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { authClient } from "@/app/lib/auth-client";
+
 export default function LogoutButton() {
   const router = useRouter();
 
@@ -11,11 +13,9 @@ export default function LogoutButton() {
   async function handleLogout() {
     setIsSubmitting(true);
 
-    const response = await fetch("/api/session", {
-      method: "DELETE",
-    });
+    const { error } = await authClient.signOut();
 
-    if (!response.ok) {
+    if (error) {
       setIsSubmitting(false);
       return;
     }
