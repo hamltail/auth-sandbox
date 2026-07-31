@@ -2,7 +2,6 @@ import { config } from "dotenv";
 
 config({ path: ".env.local" });
 
-import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../app/generated/prisma/client";
 
@@ -16,13 +15,12 @@ const prisma = new PrismaClient({
 
 async function main() {
   const email = `hamru-${Date.now()}@example.com`;
-  const passwordDigest = await bcrypt.hash("password", 10);
 
   const user = await prisma.user.create({
     data: {
+      id: crypto.randomUUID(),
       name: "Hamru",
       email,
-      passwordDigest,
     },
   });
 

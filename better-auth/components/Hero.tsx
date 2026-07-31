@@ -16,7 +16,7 @@ export default function Hero() {
           </p>
 
           <h1 className="font-en text-5xl leading-none font-bold tracking-tight md:text-7xl">
-            Explore authentication.
+            Explore Better Auth.
           </h1>
 
           <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
