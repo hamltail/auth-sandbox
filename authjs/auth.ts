@@ -1,17 +1,14 @@
-import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { z } from "zod";
+import bcrypt from "bcryptjs";
 
 import { prisma } from "@/app/lib/prisma";
+import { loginSchema } from "@/app/lib/validations/session";
 
-const credentialsSchema = z.object({
-  email: z.string().trim().pipe(z.email()),
-  password: z.string().min(1),
-});
-
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
 
   session: {
@@ -23,30 +20,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
 
   providers: [
+    Google,
+
     Credentials({
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-        },
+        email: {},
+        password: {},
       },
 
       async authorize(credentials) {
-        const result = credentialsSchema.safeParse(credentials);
+        const result = loginSchema.safeParse(credentials);
 
         if (!result.success) {
           return null;
         }
 
-        const { email, password } = result.data;
-
         const user = await prisma.user.findUnique({
           where: {
-            email,
+            email: result.data.email,
           },
         });
 
@@ -54,27 +45,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const passwordMatches = await bcrypt.compare(
-          password,
+        const isPasswordValid = await bcrypt.compare(
+          result.data.password,
           user.passwordDigest,
         );
 
-        if (!passwordMatches) {
+        if (!isPasswordValid) {
           return null;
         }
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        };
+        return user;
       },
     }),
   ],
 
   callbacks: {
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
@@ -82,9 +68,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
 
-    session({ session, token }) {
-      if (session.user && typeof token.id === "string") {
-        session.user.id = token.id;
+    async session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
       }
 
       return session;
