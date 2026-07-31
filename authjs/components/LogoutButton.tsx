@@ -1,27 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function LogoutButton() {
-  const router = useRouter();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleLogout() {
     setIsSubmitting(true);
 
-    const response = await fetch("/api/session", {
-      method: "DELETE",
+    await signOut({
+      redirectTo: "/",
     });
-
-    if (!response.ok) {
-      setIsSubmitting(false);
-      return;
-    }
-
-    router.push("/");
-    router.refresh();
   }
 
   return (
