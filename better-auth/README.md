@@ -64,13 +64,15 @@ docker compose down
 
 ローカル開発では `.env.local` を使用します。
 
+Docker Compose では PostgreSQL をホストの `5433` ポートで公開しています。
+
 ```env
 # Better Auth
 BETTER_AUTH_SECRET=""
 BETTER_AUTH_URL="http://localhost:3000"
 
 # Database
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/better_auth_sandbox"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/better_auth_sandbox"
 
 # Google OAuth
 GOOGLE_CLIENT_ID=""
