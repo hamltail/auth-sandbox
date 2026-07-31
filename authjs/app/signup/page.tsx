@@ -1,6 +1,7 @@
 "use client";
 
 import { SubmitEvent, useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import Container from "@/components/Container";
@@ -19,37 +20,64 @@ export default function SignupPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch("/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        passwordConfirmation: formData.get("passwordConfirmation"),
-      }),
-    });
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const passwordConfirmation = formData.get("passwordConfirmation");
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          passwordConfirmation,
+        }),
+      });
 
-    if (!response.ok) {
-      let message = data.message ?? "ユーザー登録に失敗しました。";
+      const data = await response.json();
 
-      if (Array.isArray(data.errors) && data.errors.length > 0) {
-        const messages = data.errors.map(
-          (error: { message: string }) => error.message,
-        );
-        message = messages.join("\n");
+      if (!response.ok) {
+        let message = data.message ?? "ユーザー登録に失敗しました。";
+
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+          message = data.errors
+            .map((error: { message: string }) => error.message)
+            .join("\n");
+        }
+
+        setErrorMessage(message);
+        return;
       }
 
-      setErrorMessage(message);
-      setIsSubmitting(false);
-      return;
-    }
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    router.push(`/users/${data.id}`);
+      if (signInResult?.error) {
+        setErrorMessage(
+          "ユーザー登録には成功しましたが、自動ログインに失敗しました。ログイン画面からログインしてください。",
+        );
+
+        router.push("/login");
+        return;
+      }
+
+      router.push(`/users/${data.id}`);
+      router.refresh();
+    } catch {
+      setErrorMessage(
+        "通信エラーが発生しました。時間をおいて再度お試しください。",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -80,7 +108,7 @@ export default function SignupPage() {
                 name="name"
                 type="text"
                 autoComplete="name"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
@@ -94,7 +122,7 @@ export default function SignupPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
@@ -108,7 +136,7 @@ export default function SignupPage() {
                 name="password"
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
@@ -125,14 +153,14 @@ export default function SignupPage() {
                 name="passwordConfirmation"
                 type="password"
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-teal-500 px-6 text-lg font-semibold text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-fuchsia-500 px-6 text-lg font-semibold text-white transition hover:bg-fuchsia-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Creating..." : "Create account"}
             </button>

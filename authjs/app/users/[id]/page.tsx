@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { currentUser } from "@/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
 import Container from "@/components/Container";
 
@@ -12,13 +12,13 @@ type PageProps = {
 
 export default async function UserPage({ params }: PageProps) {
   const { id } = await params;
-  const current = await currentUser();
+  const session = await auth();
 
-  if (!current) {
+  if (!session?.user) {
     redirect("/login");
   }
 
-  if (current.id !== id) {
+  if (session.user.id !== id) {
     notFound();
   }
 

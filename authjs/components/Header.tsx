@@ -1,13 +1,19 @@
 import Link from "next/link";
 
+import { auth } from "@/auth";
+
 import Container from "./Container";
+import LogoutButton from "./LogoutButton";
 
 const navigationItems = [
   { label: "Home", href: "/" },
   { label: "Help", href: "/help" },
 ];
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+  const user = session?.user;
+
   return (
     <header className="border-b border-gray-200 px-7 md:px-11 xl:px-0">
       <Container>
@@ -32,23 +38,44 @@ export default function Header() {
                 </li>
               ))}
 
-              <li>
-                <Link
-                  href="/login"
-                  className="transition-opacity hover:opacity-60"
-                >
-                  Log in
-                </Link>
-              </li>
+              {user ? (
+                <>
+                  {user.id && (
+                    <li>
+                      <Link
+                        href={`/users/${user.id}`}
+                        className="transition-opacity hover:opacity-60"
+                      >
+                        Account
+                      </Link>
+                    </li>
+                  )}
 
-              <li>
-                <Link
-                  href="/signup"
-                  className="inline-flex min-h-10 items-center justify-center rounded-full bg-fuchsia-500 px-5 text-base font-semibold text-white transition hover:bg-fuchsia-600"
-                >
-                  Sign up
-                </Link>
-              </li>
+                  <li>
+                    <LogoutButton />
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/login"
+                      className="transition-opacity hover:opacity-60"
+                    >
+                      Log in
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link
+                      href="/signup"
+                      className="inline-flex min-h-10 items-center justify-center rounded-full bg-fuchsia-500 px-5 text-base font-semibold text-white transition hover:bg-fuchsia-600"
+                    >
+                      Sign up
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
         </div>
