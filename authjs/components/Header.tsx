@@ -21,7 +21,7 @@ export default async function Header() {
             href="/"
             className="font-en text-2xl font-semibold tracking-wide"
           >
-            Sandbox
+            Auth.js Sandbox
           </Link>
 
           <nav aria-label="メインナビゲーション">
