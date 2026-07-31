@@ -64,12 +64,14 @@ docker compose down
 
 ローカル開発では `.env.local` を使用します。
 
+Docker Compose では PostgreSQL をホストの `5434` ポートで公開しています。
+
 ```env
 # Auth.js
 AUTH_SECRET=""
 
 # Database
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/authjs_sandbox"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5434/authjs_sandbox"
 
 # Google OAuth
 AUTH_GOOGLE_ID=""
