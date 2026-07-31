@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { currentUser } from "@/app/lib/auth";
+import { currentUser } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
 import Container from "@/components/Container";
 
