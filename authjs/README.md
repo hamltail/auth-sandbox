@@ -1,15 +1,17 @@
-# Next.js Sandbox
+# Auth.js Sandbox
 
-Next.js の学習・技術検証用リポジトリです。
+Next.js 環境で Auth.js の機能や実装方法を検証するためのプロジェクトです。
 
-Next.js や周辺技術を学習・検証し、
-次のプロダクト開発へ活かすことを目的としています。
+## Verification Topics
 
-⚠️ 登録されたテストデータは、毎日 03:00（JST）に自動削除されます。
-
-## Live Demo
-
-🌐 [Webサイトを見る](https://next.hamltail.dev/)
+- メールアドレスとパスワードによる認証
+- Google認証
+- JWTセッション
+- 認証が必要なページの保護
+- ユーザー情報の取得
+- ログアウト
+- Prismaとの連携
+- エラーハンドリング
 
 ## Tech Stack
 
@@ -17,23 +19,9 @@ Next.js や周辺技術を学習・検証し、
 - React
 - TypeScript
 - Tailwind CSS
+- Auth.js
 - Prisma
 - PostgreSQL
-- Docker
-- Supabase
-- Vercel
-
-## Learning Topics
-
-- App Router
-- Route Handlers
-- Server Actions
-- CRUD
-- Authentication
-- Prisma ORM
-- Supabase
-- Testing (Vitest / Playwright)
-- Vercel Deployment
 
 ## Requirements
 
@@ -77,7 +65,15 @@ docker compose down
 ローカル開発では `.env.local` を使用します。
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/nextjs_sandbox"
+# Auth.js
+AUTH_SECRET=""
+
+# Database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/authjs_sandbox"
+
+# Google OAuth
+AUTH_GOOGLE_ID=""
+AUTH_GOOGLE_SECRET=""
 ```
 
 ### Database
@@ -93,6 +89,13 @@ npx prisma generate
 
 ```bash
 npm run dev
+```
+
+### Run Tests
+
+```bash
+npm run test:run
+npm run test:e2e
 ```
 
 ### Prisma Studio
