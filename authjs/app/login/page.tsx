@@ -2,6 +2,7 @@
 
 import { SubmitEvent, useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 import Container from "@/components/Container";
 
@@ -17,26 +18,35 @@ export default function LoginPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch("/api/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
+    const result = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      setErrorMessage(data.message ?? "ログインに失敗しました。");
+    if (result?.error) {
+      setErrorMessage(
+        "メールアドレスまたはパスワードが正しくありません。",
+      );
       setIsSubmitting(false);
       return;
     }
 
     window.location.assign("/");
+  }
+
+  async function handleGoogleLogin() {
+    setErrorMessage("");
+    setIsSubmitting(true);
+
+    try {
+      await signIn("google", {
+        redirectTo: "/",
+      });
+    } catch {
+      setErrorMessage("Googleログインに失敗しました。");
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -58,7 +68,24 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <div className="mt-8">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isSubmitting}
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full border border-gray-300 bg-white px-6 text-lg font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Redirecting..." : "Continue with Google"}
+            </button>
+
+            <div className="my-6 flex items-center gap-4">
+              <div className="h-px flex-1 bg-gray-300" />
+              <span className="text-sm text-gray-500">OR</span>
+              <div className="h-px flex-1 bg-gray-300" />
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium">
                 Email
@@ -69,7 +96,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
@@ -83,14 +110,14 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 outline-none transition focus:border-fuchsia-500 focus:ring-2 focus:ring-fuchsia-200"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-teal-500 px-6 text-lg font-semibold text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="font-en inline-flex min-h-12 w-full items-center justify-center rounded-full bg-fuchsia-500 px-6 text-lg font-semibold text-white transition hover:bg-fuchsia-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Logging in..." : "Log in"}
             </button>
@@ -100,7 +127,7 @@ export default function LoginPage() {
             New user?{" "}
             <Link
               href="/signup"
-              className="font-medium text-teal-600 transition hover:text-teal-700"
+              className="font-medium text-fuchsia-600 transition hover:text-fuchsia-700"
             >
               Sign up now!
             </Link>
