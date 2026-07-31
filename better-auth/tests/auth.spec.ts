@@ -28,4 +28,36 @@ test.describe("認証機能", () => {
       }),
     ).toBeVisible();
   });
+
+  test("ログイン画面からGoogle認証を開始できる", async ({ page }) => {
+    await page.goto("/login");
+
+    const googleButton = page.getByRole("button", {
+      name: "Continue with Google",
+    });
+
+    await expect(googleButton).toBeVisible();
+
+    await googleButton.click();
+
+    await page.waitForURL((url) =>
+      url.hostname.includes("accounts.google.com"),
+    );
+  });
+
+  test("サインアップ画面からGoogle認証を開始できる", async ({ page }) => {
+    await page.goto("/signup");
+
+    const googleButton = page.getByRole("button", {
+      name: "Sign up with Google",
+    });
+
+    await expect(googleButton).toBeVisible();
+
+    await googleButton.click();
+
+    await page.waitForURL((url) =>
+      url.hostname.includes("accounts.google.com"),
+    );
+  });
 });

@@ -5,7 +5,7 @@ Next.js 環境で Better Auth の機能や実装方法を検証するための�
 ## Verification Topics
 
 - メールアドレスとパスワードによる認証
-- ソーシャルログイン
+- Google認証
 - セッション管理
 - 認証が必要なページの保護
 - ユーザー情報の取得
@@ -64,8 +64,19 @@ docker compose down
 
 ローカル開発では `.env.local` を使用します。
 
+Docker Compose では PostgreSQL をホストの `5433` ポートで公開しています。
+
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/better_auth_sandbox"
+# Better Auth
+BETTER_AUTH_SECRET=""
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/better_auth_sandbox"
+
+# Google OAuth
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
 ```
 
 ### Database
@@ -81,6 +92,13 @@ npx prisma generate
 
 ```bash
 npm run dev
+```
+
+### Run Tests
+
+```bash
+npm run test:run
+npm run test:e2e
 ```
 
 ### Prisma Studio
