@@ -89,9 +89,7 @@ export default function SignupPage() {
         redirectTo: "/",
       });
     } catch {
-      setErrorMessage(
-        "Googleアカウントでの登録に失敗しました。",
-      );
+      setErrorMessage("Googleアカウントでの登録に失敗しました。");
       setIsSubmitting(false);
     }
   }
