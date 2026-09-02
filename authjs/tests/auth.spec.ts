@@ -41,9 +41,7 @@ test("ログイン画面からGoogle認証を開始できる", async ({ page }) 
 
   await googleButton.click();
 
-  await page.waitForURL((url) =>
-    url.hostname.includes("accounts.google.com"),
-  );
+  await page.waitForURL((url) => url.hostname.includes("accounts.google.com"));
 });
 
 test("サインアップ画面からGoogle認証を開始できる", async ({ page }) => {
@@ -57,7 +55,5 @@ test("サインアップ画面からGoogle認証を開始できる", async ({ pa
 
   await googleButton.click();
 
-  await page.waitForURL((url) =>
-    url.hostname.includes("accounts.google.com"),
-  );
+  await page.waitForURL((url) => url.hostname.includes("accounts.google.com"));
 });

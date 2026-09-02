@@ -2,11 +2,13 @@
 
 import { SubmitEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import Container from "@/components/Container";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,14 +27,12 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setErrorMessage(
-        "メールアドレスまたはパスワードが正しくありません。",
-      );
+      setErrorMessage("メールアドレスまたはパスワードが正しくありません。");
       setIsSubmitting(false);
       return;
     }
 
-    window.location.assign("/");
+    router.push("/");
   }
 
   async function handleGoogleLogin() {
@@ -55,9 +55,7 @@ export default function LoginPage() {
         <div className="mx-auto max-w-md">
           <h1 className="font-en text-4xl font-bold">Log in</h1>
 
-          <p className="mt-3 text-gray-600">
-            Log in to your account.
-          </p>
+          <p className="mt-3 text-gray-600">Log in to your account.</p>
 
           {errorMessage && (
             <div
